@@ -1,6 +1,6 @@
 // Keeps Little Timer working without internet after the first visit.
 // If you change index.html later, bump the version so phones pick up the new copy.
-const CACHE = 'little-timer-v2';
+const CACHE = 'little-timer-v3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {

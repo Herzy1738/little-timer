@@ -94,9 +94,9 @@
   }
   .round:active { transform: scale(.94); }
 
-  .presets { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .presets { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
   .chip {
-    min-width: 62px; height: 50px; padding: 0 14px; border-radius: 999px;
+    min-width: 58px; height: 50px; padding: 0 12px; border-radius: 999px;
     background: var(--chip); color: var(--chip-ink); box-shadow: var(--shadow);
     font-size: 20px; font-weight: 600;
   }
@@ -123,6 +123,19 @@
     background: var(--pie); color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center;
   }
   .photos-btn .badge:empty { display: none; }
+
+  /* Very narrow phones */
+  @media (max-width: 359px) {
+    .chip { min-width: 48px; height: 44px; padding: 0 8px; font-size: 17px; }
+    .presets { gap: 6px; }
+    .swatch { width: 28px; height: 28px; }
+    .extras { gap: 7px; }
+    .photos-btn, .sound { width: 40px; height: 40px; margin-left: 2px; }
+    .readout { font-size: 38px; }
+    .round { width: 50px; height: 50px; font-size: 30px; }
+    .big { height: 58px; font-size: 22px; }
+    .panel { gap: 12px; }
+  }
 
   /* Photo hidden under the pie */
   #photo { display: none; }
@@ -229,6 +242,34 @@
   .add-status { min-height: 1.4em; text-align: center; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
 
+  /* ---------- First-time photo setup ---------- */
+  .welcome {
+    position: fixed; inset: 0; z-index: 30; background: var(--bg);
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: max(20px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
+             max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    display: flex;
+  }
+  .welcome[hidden] { display: none; }
+  .welcome-inner { margin: auto; width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .welcome .demo { width: min(52vw, 30vh, 240px); height: auto; overflow: visible; }
+  .welcome .demo .face { fill: var(--face); stroke: var(--rim); stroke-width: 4; }
+  .welcome .demo .pie { fill: var(--pie); }
+  .welcome h2 { margin: 4px 0 0; font-size: clamp(26px, 7vw, 34px); line-height: 1.15; }
+  .welcome .lede { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; }
+  .steps { list-style: none; counter-reset: step; margin: 0; padding: 14px 16px; width: 100%; text-align: left;
+           background: var(--chip); border-radius: 18px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; font-size: 16px; line-height: 1.35; }
+  .steps li { counter-increment: step; position: relative; padding-left: 38px; min-height: 26px; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: -2px; width: 26px; height: 26px; border-radius: 50%; background: var(--pie); color: #fff;
+                      font-weight: 700; font-size: 14px; display: grid; place-items: center; }
+  .welcome-picked { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .welcome-picked[hidden], .welcome-pick[hidden], .welcome [hidden] { display: none !important; }
+  .welcome .count { margin: 0; font-size: 18px; font-weight: 700; }
+  .welcome .thumbs { max-height: 34vh; overflow-y: auto; padding: 2px; }
+  .welcome .add-status { margin: 0; color: var(--muted); font-size: 15px; }
+  .welcome-actions { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .skip { color: var(--muted); font-size: 16px; text-decoration: underline; padding: 8px 12px; }
+
   @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounce { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-6%) rotate(4deg); } }
   @media (prefers-reduced-motion: reduce) {
@@ -326,13 +367,57 @@
   </section>
 </div>
 
+<section class="welcome" id="welcome" hidden aria-labelledby="welcomeTitle">
+  <div class="welcome-inner">
+    <svg class="demo" viewBox="-110 -110 220 220" aria-hidden="true">
+      <defs>
+        <clipPath id="demoClip"><circle r="86"></circle></clipPath>
+        <linearGradient id="demoSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD3F4"/><stop offset="1" stop-color="#D9F1FF"/></linearGradient>
+      </defs>
+      <circle class="face" r="104"></circle>
+      <g clip-path="url(#demoClip)">
+        <rect x="-90" y="-90" width="180" height="180" fill="url(#demoSky)"/>
+        <circle cx="0" cy="-12" r="40" fill="#FFD23F"/>
+        <circle cx="-14" cy="-20" r="5" fill="#3B3341"/><circle cx="14" cy="-20" r="5" fill="#3B3341"/>
+        <path d="M-17 -2 Q0 14 17 -2" fill="none" stroke="#3B3341" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="-50" cy="80" rx="90" ry="50" fill="#7BD389"/><ellipse cx="60" cy="88" rx="90" ry="50" fill="#5DBB6F"/>
+      </g>
+      <path class="pie" id="demoPie"></path>
+    </svg>
+
+    <h2 id="welcomeTitle">Add photos of your kids</h2>
+    <p class="lede">A photo hides under the color and slowly appears as time runs out. Pick at least 2 so it's a different one every time.</p>
+
+    <div class="welcome-pick" id="welcomePick">
+      <ol class="steps">
+        <li>Tap <b>Choose kid photos</b>, then <b>Photo Library</b>.</li>
+        <li>Go to <b>Albums</b> and open your <b>Kids</b> album (or <b>People</b>).</li>
+        <li>Select at least 2 photos, then tap <b>Add</b>.</li>
+      </ol>
+    </div>
+
+    <div class="welcome-picked" id="welcomePicked" hidden>
+      <p class="count" id="welcomeCount"></p>
+      <div class="thumbs" id="welcomeThumbs"></div>
+    </div>
+
+    <p class="add-status" id="welcomeStatus" aria-live="polite"></p>
+
+    <div class="welcome-actions">
+      <button class="big" id="welcomeMain">Choose kid photos</button>
+      <button class="big secondary" id="welcomeMore" hidden>+ Add more</button>
+    </div>
+    <button class="skip" id="welcomeSkip">Skip for now</button>
+  </div>
+</section>
+
 <script>
 (() => {
   'use strict';
 
   const KEY = 'littleTimer.v1';
   const COLORS = ['#E8505B', '#F59E3B', '#2FA866', '#3D8BFD', '#9B6BDF'];
-  const PRESETS = [60, 120, 180, 300, 600, 900, 1200, 1800];
+  const PRESETS = [30, 60, 120, 180, 300, 600, 900, 1200, 1800];
   const MIN = 30, MAX = 3600, HOLD_MS = 1000;
 
   const $ = (id) => document.getElementById(id);
@@ -341,7 +426,7 @@
   const toast = $('toast'), doneEl = $('done'), soundBtn = $('sound');
 
   // ---------- State (remembered between visits) ----------
-  const state = { duration: 300, color: 0, sound: true, status: 'setup', endAt: 0, remaining: 0, reveal: true, photoId: null };
+  const state = { duration: 300, color: 0, sound: true, status: 'setup', endAt: 0, remaining: 0, reveal: true, photoId: null, lastShownId: null };
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (saved && typeof saved === 'object') Object.assign(state, saved);
@@ -366,15 +451,16 @@
   })();
 
   // Draws the colored slice that is left. The empty part grows clockwise from 12 o'clock.
-  function drawPie(frac) {
+  function piePath(frac) {
     const R = 86;
     frac = Math.max(0, Math.min(1, frac));
-    if (frac >= 0.9999) { pie.setAttribute('d', `M0,${-R}A${R},${R} 0 1 1 0,${R}A${R},${R} 0 1 1 0,${-R}Z`); return; }
-    if (frac <= 0.0001) { pie.setAttribute('d', ''); return; }
+    if (frac >= 0.9999) return `M0,${-R}A${R},${R} 0 1 1 0,${R}A${R},${R} 0 1 1 0,${-R}Z`;
+    if (frac <= 0.0001) return '';
     const a = (1 - frac) * Math.PI * 2;
     const x = (Math.sin(a) * R).toFixed(3), y = (-Math.cos(a) * R).toFixed(3);
-    pie.setAttribute('d', `M0,0L${x},${y}A${R},${R} 0 ${frac > 0.5 ? 1 : 0} 1 0,${-R}Z`);
+    return `M0,0L${x},${y}A${R},${R} 0 ${frac > 0.5 ? 1 : 0} 1 0,${-R}Z`;
   }
+  function drawPie(frac) { pie.setAttribute('d', piePath(frac)); }
 
   const fmt = (sec) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
   const presetLabel = (s) => s < 60 ? `${s}s` : `${s / 60}m`;
@@ -386,7 +472,7 @@
     b.className = 'chip';
     b.textContent = presetLabel(s);
     b.dataset.sec = s;
-    b.setAttribute('aria-label', s === 60 ? '1 minute' : `${s / 60} minutes`);
+    b.setAttribute('aria-label', s < 60 ? `${s} seconds` : s === 60 ? '1 minute' : `${s / 60} minutes`);
     b.addEventListener('click', () => setDuration(s));
     presetsEl.appendChild(b);
   });
@@ -421,6 +507,7 @@
   function start() {
     unlockAudio();
     pickPhoto();
+    if (state.photoId) state.lastShownId = state.photoId;
     state.endAt = Date.now() + state.duration * 1000;
     state.status = 'running';
     save(); enterRunning();
@@ -706,7 +793,8 @@
   // Picks a random photo for the next timer (not the same one twice in a row).
   function pickPhoto() {
     if (!state.reveal || !photos.length) { state.photoId = null; applyPhoto(); return; }
-    let choices = photos.filter((p) => p.id !== state.photoId);
+    // Never repeat the photo the kids saw last time (only possible with 2+ photos).
+    let choices = photos.filter((p) => p.id !== state.lastShownId);
     if (!choices.length) choices = photos;
     state.photoId = choices[Math.floor(Math.random() * choices.length)].id;
     applyPhoto();
@@ -754,7 +842,7 @@
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
     let added = 0, failed = 0;
     for (const f of list) {
-      addStatus.textContent = `Adding ${added + failed + 1} of ${list.length}…`;
+      setAddStatus(`Adding ${added + failed + 1} of ${list.length}…`);
       try {
         const blob = await shrink(f);
         const rec = { id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`, blob, added: Date.now() };
@@ -764,9 +852,9 @@
         renderThumbs();
       } catch (e) { failed++; }
     }
-    addStatus.textContent = failed
+    setAddStatus(failed
       ? `Added ${added}. ${failed} couldn't be read.`
-      : `Added ${added} photo${added === 1 ? '' : 's'}.`;
+      : `Added ${added} photo${added === 1 ? '' : 's'}.`);
     if (!state.photoId && state.status === 'setup') pickPhoto();
     applyPhoto();
   }
@@ -779,25 +867,74 @@
     save(); applyPhoto(); renderThumbs();
   }
 
+  function setAddStatus(text) {
+    addStatus.textContent = text;
+    $('welcomeStatus').textContent = text;
+  }
+
   function renderThumbs() {
-    thumbsEl.textContent = '';
-    for (const p of photos.slice().reverse()) {
-      const d = document.createElement('div');
-      d.className = 'thumb';
-      const img = document.createElement('img');
-      img.alt = '';
-      img.src = urlFor(p.id);
-      const x = document.createElement('button');
-      x.textContent = '×';
-      x.setAttribute('aria-label', 'Remove photo');
-      x.addEventListener('click', () => removePhoto(p.id));
-      d.append(img, x);
-      thumbsEl.appendChild(d);
+    for (const el of [thumbsEl, $('welcomeThumbs')]) {
+      el.textContent = '';
+      for (const p of photos.slice().reverse()) {
+        const d = document.createElement('div');
+        d.className = 'thumb';
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = urlFor(p.id);
+        const x = document.createElement('button');
+        x.textContent = '×';
+        x.setAttribute('aria-label', 'Remove photo');
+        x.addEventListener('click', () => removePhoto(p.id));
+        d.append(img, x);
+        el.appendChild(d);
+      }
     }
     $('emptyMsg').style.display = photos.length ? 'none' : '';
     $('clearPhotos').style.display = photos.length ? '' : 'none';
     $('revealToggle').checked = state.reveal;
+    renderWelcome();
   }
+
+  // ---------- First-time setup: asks for kid photos until some are added ----------
+  const welcome = $('welcome'), demoPie = $('demoPie');
+  const MIN_PHOTOS = 2;
+  let demoRaf = 0;
+
+  function showWelcome() {
+    setAddStatus('');
+    welcome.hidden = false;
+    renderWelcome();
+    const t0 = performance.now();
+    cancelAnimationFrame(demoRaf);
+    (function demo(now) {
+      if (welcome.hidden) return;
+      // 4s of the color shrinking, then a 1.2s pause showing the whole picture, then repeat.
+      const t = ((now || t0) - t0) % 5200;
+      demoPie.setAttribute('d', piePath(t < 4000 ? 1 - t / 4000 : 0));
+      demoRaf = requestAnimationFrame(demo);
+    })();
+  }
+  function hideWelcome() {
+    welcome.hidden = true;
+    cancelAnimationFrame(demoRaf);
+    if (state.status === 'setup') pickPhoto();
+  }
+  function renderWelcome() {
+    if (welcome.hidden) return;
+    const n = photos.length, enough = n >= MIN_PHOTOS;
+    $('welcomePick').hidden = n > 0;
+    $('welcomePicked').hidden = n === 0;
+    $('welcomeCount').textContent = `${n} photo${n === 1 ? '' : 's'} added`;
+    $('welcomeMain').textContent = n === 0 ? 'Choose kid photos'
+      : enough ? 'Start using Little Timer'
+      : `Add ${MIN_PHOTOS - n} more photo${MIN_PHOTOS - n === 1 ? '' : 's'}`;
+    $('welcomeMore').hidden = !enough;
+  }
+  $('welcomeMain').addEventListener('click', () => {
+    if (photos.length >= MIN_PHOTOS) hideWelcome(); else fileInput.click();
+  });
+  $('welcomeMore').addEventListener('click', () => fileInput.click());
+  $('welcomeSkip').addEventListener('click', hideWelcome);
 
   $('photosBtn').addEventListener('click', () => {
     addStatus.textContent = '';
@@ -838,6 +975,8 @@
     } else {
       applyPhoto();
     }
+    // No kid photos yet: show the setup screen every time the app opens until some are added.
+    if (state.status === 'setup' && state.reveal && photos.length === 0) showWelcome();
   }
 
   // ---------- Pick up where we left off (iPhone may reload the app) ----------

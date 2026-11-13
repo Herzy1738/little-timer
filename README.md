@@ -4,12 +4,12 @@ A simple visual timer for toddlers. No ads, no accounts, no tracking. It works o
 
 ## How it works
 
-- Pick a time (1–30 min buttons, or − / + for anything from 30 seconds to 60 minutes) and tap **Start**.
+- Pick a time (30 sec to 30 min buttons, or − / + for anything from 30 seconds to 60 minutes) and tap **Start**.
 - The colored circle shrinks clockwise as time runs out.
 - While it runs, a toddler tap does nothing. To pause, **press and hold** the ⏸ button in the corner for 1 second.
 - When time is up, a gentle chime plays twice, a star bounces, and confetti falls. **Again** restarts the same time.
 - Pick the circle color with the dots. The speaker button turns the chime on or off.
-- **Kid photo reveal:** tap the picture button, then **Add photos**. A random photo hides under the color and is slowly revealed as time runs out. When time is up, it's shown big on the "All done!" screen.
+- **Kid photo reveal:** a random photo hides under the color and is slowly revealed as time runs out. When time is up, it's shown big on the "All done!" screen. The same photo is never shown twice in a row (as long as there are at least 2).
 - It remembers the last time and color. If the phone closes the app mid-timer, it picks back up where it was.
 - The screen stays on while the timer runs.
 
@@ -39,14 +39,17 @@ An iPhone can only add a web page to the Home Screen from a web address, so the 
 iPhone doesn't let websites browse the photo library or search it for "kids". The app can only see photos she picks herself. She only has to do this once:
 
 1. Open Little Timer **from the Home Screen icon**, not from Safari. On iPhone they keep separate storage, so photos added in Safari won't show up in the Home Screen app.
-2. Tap the picture button next to the color dots, then **+ Add photos**, then **Photo Library**.
-3. In the picker, go to **Albums** (or **Collections**) and open her Kids album, or **People** and tap a child. Select as many photos as she likes, then tap **Add**.
+2. The first time it opens, an **"Add photos of your kids"** screen walks her through it. Tap **Choose kid photos**, then **Photo Library**.
+3. In the picker, go to **Albums** (or **Collections**) and open her Kids album, or **People** and tap a child. Select at least 2 photos, then tap **Add**.
+4. Tap **Start using Little Timer**.
+
+"Skip for now" is at the bottom of that screen, but it only skips until the next time the app is opened. While there are no photos, the setup screen comes back each time. To add or remove photos later, tap the picture button next to the color dots.
 
 Tips:
 - To get a "kids" set fast, first make an album called Kids in the Photos app (or use the People album for each child), then pick from it here.
 - The photos are shrunk and saved inside the app on her phone. They are never uploaded anywhere. Removing them here doesn't touch the Photos app.
 - New photos aren't picked up automatically. Add more any time the same way.
-- The switch at the top of that screen turns the photo reveal off without deleting the photos.
+- The "Reveal a photo" switch in the photo screen turns the photo reveal off without deleting the photos. With it off, the setup screen doesn't appear.
 
 ## Good to know
 
@@ -58,4 +61,4 @@ Tips:
 
 - `index.html`: the whole app
 - `manifest.webmanifest`, `icon-180.png`, `icon-512.png`: Home Screen name and icon
-- `sw.js`: makes it work offline. If you change `index.html` later, bump the version in `little-timer-v2` (to `v3`, and so on) so phones pick up the new copy.
+- `sw.js`: makes it work offline. If you change `index.html` later, bump the version in `little-timer-v3` (to `v4`, and so on) so phones pick up the new copy.
